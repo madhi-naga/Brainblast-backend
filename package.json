@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for Brainblast",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madhi-naga/Brainblast-backend.git"
+  },
+  "author": "Madhi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/madhi-naga/Brainblast-backend/issues"
+  },
+  "homepage": "https://github.com/madhi-naga/Brainblast-backend#readme"
+}

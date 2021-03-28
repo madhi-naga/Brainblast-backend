@@ -1,10 +1,11 @@
 {
-  "name": "backend",
+  "name": "brainblast-backend",
   "version": "1.0.0",
   "description": "Backend for Brainblast",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app",
+    "dev": "nodemon app"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,15 @@
   "bugs": {
     "url": "https://github.com/madhi-naga/Brainblast-backend/issues"
   },
-  "homepage": "https://github.com/madhi-naga/Brainblast-backend#readme"
+  "homepage": "https://github.com/madhi-naga/Brainblast-backend#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.5",
+    "mongoose": "^5.12.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
 }

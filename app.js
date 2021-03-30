@@ -54,7 +54,45 @@ app.get("/scores", (req, res) => {
         });
 });
 
-app.post('/addscore', (req, res) => {
+app.get("/scores/top", (req, res) => {
+    Score.find()
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(400).send({
+                message: err.message
+            })
+        });
+});
+
+app.get("/scores/recent", (req, res) => {
+    Score.find()
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(400).send({
+                message: err.message
+            })
+        });
+});
+
+app.get("/score", (req, res) => {
+    const user = req.query.username;
+
+    Score.findOne({username: user})
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(400).send({
+                message: err.message
+            })
+        });
+});
+
+app.post('/score/new', (req, res) => {
 
     const score = new Score({
         username: req.body.username,
@@ -68,7 +106,6 @@ app.post('/addscore', (req, res) => {
         } : null
     });
 
-
     score.save()
         .then(data => {
             res.json(data)
@@ -80,14 +117,33 @@ app.post('/addscore', (req, res) => {
         });
 });
 
-app.post('/updatescore', (req, res) => {
-    leaderboard.findOneAndUpdate(req.params.user)
-        .then(res => {
-            console.log(res)
+app.post('/score/update', (req, res) => {
+    const username = req.body.username;
+
+    Score.findOneAndUpdate({username}, req.body, {new:true} )
+        .then(data => {
+            res.json(data)
         })
-        .catch(err => console.error(err))
+        .catch(err => {
+            res.status(400).send({
+                message: err.message
+            })
+        });
 });
 
+app.post('/score/delete', (req, res) => {
+    const username = req.query.username;
+
+    Score.findOneAndDelete({username})
+        .then(data => {
+            res.json(data)
+        })
+        .catch(err => {
+            res.status(400).send({
+                message: err.message
+            })
+        });
+});
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

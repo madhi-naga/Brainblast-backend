@@ -16,10 +16,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 
-db.mongoose.connect(process.env.CONNECTION, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+db.mongoose.connect(process.env.CONNECTION,
+    { useNewUrlParser: true, useUnifiedTopology: true })
     .then((res) => {
         console.log("Connected to the database!");
     })
@@ -29,14 +27,17 @@ db.mongoose.connect(process.env.CONNECTION, {
     });
 
 
-// const mongoClient = () => MongoClient.connect(connectionString, { useUnifiedTopology: true })
-//     .then(client => {
-//         console.log('Connected to Database');
-//         const db = client.db('brainblast');
-//         const leaderboard = db.collection('leaderboard');
-//     })
-//     .catch(console.log(console.error()));
+const calcTotalScore = (gamescores) => {
+    let sorted = gamescores.slice().sort(function (a, b) { return b - a })
+    let totalScore = 0;
 
+    for (var i = 0; i < 5; i++) {
+        let miniScore = sorted[i] * (1 - 0.2*i) 
+        totalScore += miniScore;
+    }
+    let round = Math.round(totalScore * 10) / 10;
+    return round.toFixed(1);
+}
 
 app.get("/", (req, res) => {
     res.send("<h1>Welcome to the Brainblast Backend</h1>");
@@ -79,9 +80,9 @@ app.get("/scores/recent", (req, res) => {
 });
 
 app.get("/score", (req, res) => {
-    const user = req.query.username;
+    const username = req.query.username;
 
-    Score.findOne({username: user})
+    Score.findOne({ username })
         .then(data => {
             res.send(data);
         })
@@ -119,9 +120,25 @@ app.post('/score/new', (req, res) => {
 
 app.post('/score/update', (req, res) => {
     const username = req.body.username;
-
-    Score.findOneAndUpdate({username}, req.body, {new:true} )
+    
+    Score.findOne({ username })
         .then(data => {
+            console.log(typeof data.minigame_scores);
+            return data.minigame_scores;
+        }).then(scoredata => {
+            updatedata = {
+                minigame_1: req.body.minigame_scores.minigame_1 ? req.body.minigame_scores.minigame_1 : scoredata.minigame_1,
+                minigame_2: req.body.minigame_scores.minigame_2 ? req.body.minigame_scores.minigame_2 : scoredata.minigame_2,
+                minigame_3: req.body.minigame_scores.minigame_3 ? req.body.minigame_scores.minigame_3 : scoredata.minigame_3,
+                minigame_4: req.body.minigame_scores.minigame_4 ? req.body.minigame_scores.minigame_4 : scoredata.minigame_4,
+                minigame_5: req.body.minigame_scores.minigame_5 ? req.body.minigame_scores.minigame_5 : scoredata.minigame_5
+            }
+            scores = Object.values(updatedata);
+            return calcTotalScore(scores);
+        }).then(total => {
+            req.body.total_score = total;
+            return Score.findOneAndUpdate({ username }, req.body, { new: true })
+        }).then(data => {
             res.json(data)
         })
         .catch(err => {
@@ -134,7 +151,7 @@ app.post('/score/update', (req, res) => {
 app.post('/score/delete', (req, res) => {
     const username = req.query.username;
 
-    Score.findOneAndDelete({username})
+    Score.findOneAndDelete({ username })
         .then(data => {
             res.json(data)
         })

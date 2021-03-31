@@ -56,7 +56,7 @@ app.get("/scores", (req, res) => {
 });
 
 app.get("/scores/top", (req, res) => {
-    Score.find()
+    Score.find().sort({total_score: 'desc'})
         .then(data => {
             res.send(data);
         })
@@ -68,7 +68,7 @@ app.get("/scores/top", (req, res) => {
 });
 
 app.get("/scores/recent", (req, res) => {
-    Score.find()
+    Score.find().sort({updatedAt: 'desc'})
         .then(data => {
             res.send(data);
         })
@@ -120,7 +120,7 @@ app.post('/score/new', (req, res) => {
 
 app.post('/score/update', (req, res) => {
     const username = req.body.username;
-    
+
     Score.findOne({ username })
         .then(data => {
             console.log(typeof data.minigame_scores);

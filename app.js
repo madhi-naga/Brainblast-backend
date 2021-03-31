@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const mongoose = require("mongoose");
 const db = require("./models");
-const Score = require("./models/model");
+const Score = require("./models/Score");
 
 require('dotenv').config();
 
@@ -13,7 +13,6 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
 
 db.mongoose.connect(process.env.CONNECTION,
     { useNewUrlParser: true, useUnifiedTopology: true })
@@ -31,7 +30,7 @@ const calcTotalScore = (gamescores) => {
     let totalScore = 0;
 
     for (var i = 0; i < 5; i++) {
-        let miniScore = sorted[i] * (1 - 0.2*i) 
+        let miniScore = sorted[i] * (1 - 0.2 * i)
         totalScore += miniScore;
     }
     let round = Math.round(totalScore * 10) / 10;
@@ -57,7 +56,7 @@ app.get("/scores", (req, res) => {
 
 // GET: no params to pass in
 app.get("/scores/top", (req, res) => {
-    Score.find().sort({total_score: 'desc'})
+    Score.find().sort({ total_score: 'desc' })
         .then(data => {
             res.send(data);
         })
@@ -70,7 +69,7 @@ app.get("/scores/top", (req, res) => {
 
 // GET: no params to pass in
 app.get("/scores/recent", (req, res) => {
-    Score.find().sort({updatedAt: 'desc'})
+    Score.find().sort({ updatedAt: 'desc' })
         .then(data => {
             res.send(data);
         })
@@ -128,9 +127,9 @@ app.post('/score/new', (req, res) => {
 
 /* POST, No params, but need to pass in body
  username is only required, rest are not when making the request.
- the other variables will be updated depending on if
+ the other variables (minigame scores) will be updated depending on if
  that variable is passed in the request body.
- total_score will be calculated automatically, no need to add in the body.
+ total_score will be weight calculated automatically, no need to add it in the body.
 */
 app.post('/score/update', (req, res) => {
     const username = req.body.username;

@@ -11,7 +11,8 @@ var corsOptions = {
     origin: process.env.PORT || "http://localhost:8080"
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
+app.options('*', cors());
 app.use(express.json());
 
 db.mongoose.connect(process.env.CONNECTION,

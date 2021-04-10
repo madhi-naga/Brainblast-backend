@@ -56,7 +56,23 @@ app.get("/scores", (req, res) => {
 
 // GET: no params to pass in
 app.get("/scores/top", (req, res) => {
-    Score.find().sort({ total_score: 'desc' })
+    Score.find().sort({ total_score: 'desc' }).limit(10)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(400).send({
+                message: err.message
+            })
+        });
+});
+
+// GET: minigame num to pass in  route eg. ..scores/top/minigame_1
+app.get("/scores/top/:num", (req, res) => {
+    var query = {};
+    query['minigame_scores.minigame_' + req.params.num] = 'desc';
+
+    Score.find().sort(query).limit(10)
         .then(data => {
             res.send(data);
         })
@@ -69,7 +85,7 @@ app.get("/scores/top", (req, res) => {
 
 // GET: no params to pass in
 app.get("/scores/recent", (req, res) => {
-    Score.find().sort({ updatedAt: 'desc' })
+    Score.find().sort({ updatedAt: 'desc' }).limit(10)
         .then(data => {
             res.send(data);
         })

@@ -67,7 +67,7 @@ app.get("/scores/top", (req, res) => {
         });
 });
 
-// GET: minigame num to pass in  route eg. ..scores/top/minigame_1
+// GET: minigame num to pass in  route eg. ..scores/top/3
 app.get("/scores/top/:num", (req, res) => {
     var query = {};
     query['minigame_scores.minigame_' + req.params.num] = 'desc';

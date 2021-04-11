@@ -151,9 +151,8 @@ app.post('/score/new', (req, res) => {
 app.post('/score/update', (req, res) => {
     const username = req.body.username;
 
-    Score.findOne({ username })
+    Score.findOne({ username: username })
         .then(data => {
-            console.log(typeof data.minigame_scores);
             return data.minigame_scores;
         }).then(scoredata => {
             updatedata = {
@@ -162,11 +161,13 @@ app.post('/score/update', (req, res) => {
                 minigame_3: req.body.minigame_scores.minigame_3 ? req.body.minigame_scores.minigame_3 : scoredata.minigame_3,
                 minigame_4: req.body.minigame_scores.minigame_4 ? req.body.minigame_scores.minigame_4 : scoredata.minigame_4,
                 minigame_5: req.body.minigame_scores.minigame_5 ? req.body.minigame_scores.minigame_5 : scoredata.minigame_5
-            }
+            }            
             scores = Object.values(updatedata);
+            req.body.minigame_scores = updatedata;
             return calcTotalScore(scores);
         }).then(total => {
             req.body.total_score = total;
+            console.log(req.body);
             return Score.findOneAndUpdate({ username }, req.body, { new: true })
         }).then(data => {
             res.json(data)
